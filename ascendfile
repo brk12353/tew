@@ -10925,6 +10925,46 @@ local Ascend = (function()
 			else
 				check = nil
 			end
+			local optionBind = nil
+			if options.Keybinds == true then
+				optionBind = BuildKeybind(row, 3, {
+					Name = name .. ": " .. option,
+					Default = type(options.KeybindDefaults) == "table" and options.KeybindDefaults[option] or nil,
+					Mode = "Always",
+					Trigger = "Press",
+					Callback = function(state)
+						if state == false or dropdown.Locked then
+							return
+						end
+						if multi then
+							local picked = table.clone(dropdown.Value)
+							local at = table.find(picked, option)
+							if at then
+								table.remove(picked, at)
+							else
+								table.insert(picked, option)
+							end
+							dropdown:Set(picked)
+						elseif dropdown.Value ~= option then
+							dropdown:Set(option)
+						end
+					end,
+					ChangedCallback = function(bound, modifiers)
+						SafeCall(options.KeybindChanged, option, bound, modifiers)
+					end,
+				}, nil, self)
+				row.Destroying:Connect(function()
+					local at = table.find(Library.Keybinds, optionBind)
+					if at then
+						table.remove(Library.Keybinds, at)
+					end
+					local inSection = table.find(self.Binds, optionBind)
+					if inSection then
+						table.remove(self.Binds, inSection)
+					end
+					Library:_RefreshKeybindList()
+				end)
+			end
 			local hovering = false
 			local function render(instant)
 				local selected = isSelected(option)
