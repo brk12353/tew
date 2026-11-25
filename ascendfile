@@ -10669,22 +10669,24 @@ local Ascend = (function()
 			local content = Create("Frame", {
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Position = UDim2.fromScale(0.5, 0.5),
-				Size = UDim2.new(0, 0, 1, 0),
-				AutomaticSize = Enum.AutomaticSize.X,
+				Size = UDim2.new(1, -12, 1, 0),
 				BackgroundTransparency = 1,
 				Parent = holder,
 			})
-			Row(content, 6)
+			local contentLayout = Row(content, 6)
+			contentLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 			local icon, tintIcon = Glyph(content, { info.Icon }, 14, Theme.TextDim, nil, { LayoutOrder = 1 })
-			Text({
+			local buttonLabel = Text({
 				Text = tostring(info.Name or "Button"),
 				FontFace = Fonts.SemiBold,
 				TextSize = 12,
+				TextTruncate = Enum.TextTruncate.AtEnd,
 				Size = UDim2.new(0, 0, 1, 0),
 				AutomaticSize = Enum.AutomaticSize.X,
 				LayoutOrder = 2,
 				Parent = content,
 			})
+			Create("UIFlexItem", { FlexMode = Enum.UIFlexMode.Shrink, Parent = buttonLabel })
 			holder.MouseEnter:Connect(function()
 				Tween(holder, { BackgroundColor3 = Theme.Hover }, Motion.Fast)
 				Tween(stroke, { Color = Theme.LineStrong }, Motion.Fast)
